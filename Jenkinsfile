@@ -5,7 +5,7 @@ pipeline {
         MAVEN_HOME = tool 'Maven 3.9.10'
         PATH = "${MAVEN_HOME}/bin:${env.PATH}"
         DOCKERHUB_CREDENTIALS = 'dockerhub-credentials-id'  // Jenkins credentials ID for Docker Hub
-        DOCKER_IMAGE = "surya01021/maven-sample-app"
+        DOCKER_IMAGE = "surya01021/maven-sample-project"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
     }
 
