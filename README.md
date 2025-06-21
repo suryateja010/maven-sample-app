@@ -1,1 +1,1 @@
-This is a sample maven project for both CI/CD
+This is a sample Maven project for both CI/CD.
