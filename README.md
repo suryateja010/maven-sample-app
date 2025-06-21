@@ -1,2 +1,2 @@
 This is a sample Maven project for both CI/CD.
-Tools(GitHub, Jenkins).
+Tools(GitHub, Jenkins, Docker).
