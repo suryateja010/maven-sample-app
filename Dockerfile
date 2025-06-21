@@ -10,6 +10,6 @@ RUN mvn -f /usr/src/app/pom.xml clean package
 # PACKAGE STAGE
 #
 FROM openjdk:11-jre-slim 
-COPY --from=build /usr/src/app/target/demo-0.0.1-SNAPSHOT.jar /usr/app/demo-0.0.1-SNAPSHOT.jar  
+COPY --from=build /usr/src/app/target/my-app-1.0-SNAPSHOT.jar /usr/app/my-app-1.0-SNAPSHOT.jar
 EXPOSE 8081
-CMD ["java","-jar","/usr/app/demo-0.0.1-SNAPSHOT.jar"]  
+CMD ["java","-jar","/usr/app/my-app-1.0-SNAPSHOT.jar"]  
