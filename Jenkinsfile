@@ -1,59 +1,54 @@
 pipeline {
-    agent any   // Runs on any available agent
+    agent any
 
     environment {
-        MAVEN_HOME = tool 'Maven 3.9.10'  // Name from Global Tool Configuration
+        MAVEN_HOME = tool 'Maven 3.9.10'
         PATH = "${MAVEN_HOME}/bin:${env.PATH}"
+        DOCKERHUB_CREDENTIALS = 'dockerhub-credentials-id'  // Jenkins credentials ID for Docker Hub
+        DOCKER_IMAGE = "surya01021/maven-sample-app"
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
     }
 
     options {
-        timestamps()  // Adds timestamps to the console output
-        buildDiscarder(logRotator(numToKeepStr: '5'))  // Keep only last 10 builds
+        timestamps()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 
     triggers {
-        githubPush()  // Trigger build on GitHub push event (webhook)
+        githubPush()
     }
 
     tools {
-        maven 'Maven 3.9.10'  // Tool name must match what's configured in Jenkins
-        // Optionally use: jdk 'JDK11'
+        maven 'Maven 3.9.10'
+         dockerTool 'Docker 28'
     }
 
     stages {
-
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/suryateja010/maven-sample-app.git'
             }
         }
 
-        stage('Build') {
+        stage('Docker Build') {
             steps {
-                sh 'mvn clean compile'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'  // Publish test results
+                script {
+                    sh "docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} ."
                 }
             }
         }
 
-        stage('Package') {
+        stage('Publish to Docker Hub') {
             steps {
-                sh 'mvn package -DskipTests'
-            }
-        }
-
-        stage('Archive Artifacts') {
-            steps {
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                script {
+                    withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIALS,
+                                                     usernameVariable: 'DOCKERHUB_USER',
+                                                     passwordVariable: 'DOCKERHUB_PASS')]) {
+                        sh "echo $DOCKERHUB_PASS | docker login -u $DOCKERHUB_USER --password-stdin"
+                        sh "docker push ${DOCKER_IMAGE}:${IMAGE_TAG}"
+                        sh "docker logout"
+                    }
+                }
             }
         }
     }
@@ -68,7 +63,7 @@ pipeline {
             // notifySlack(status: 'failure')
         }
         always {
-            cleanWs()  // Clean workspace after build
+            cleanWs()
         }
     }
 }
