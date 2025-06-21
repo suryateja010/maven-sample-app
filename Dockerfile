@@ -1,7 +1,7 @@
 #
 # BUILD STAGE
 #
-FROM maven:3.9.9-jdk-21-slim AS build  
+FROM maven:3.9.9-amazoncorretto-21-debian AS build  
 COPY src /usr/src/app/src  
 COPY pom.xml /usr/src/app  
 RUN mvn -f /usr/src/app/pom.xml clean package
