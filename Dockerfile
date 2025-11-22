@@ -12,4 +12,4 @@ RUN mvn -f /usr/src/app/pom.xml clean package
 FROM openjdk:26-ea-slim 
 COPY --from=build /usr/src/app/target/my-app-1.0-SNAPSHOT.jar /usr/app/my-app-1.0-SNAPSHOT.jar
 EXPOSE 8081
-CMD ["java","-jar","/usr/app/my-app-1.0-SNAPSHOT.jar"]  
+CMD java -jar /usr/app/my-app-1.0-SNAPSHOT.jar & sleep 1000  
