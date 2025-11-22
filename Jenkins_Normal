@@ -2,7 +2,7 @@ pipeline {
     agent any   // Runs on any available agent
 
     environment {
-        MAVEN_HOME = tool 'Maven 3.9.10'  // Name from Global Tool Configuration
+        MAVEN_HOME = tool 'Maven 3.9.10'  // Name from Global Tool Configurations
         PATH = "${MAVEN_HOME}/bin:${env.PATH}"
     }
 
